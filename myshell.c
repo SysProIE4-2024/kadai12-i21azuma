@@ -178,6 +178,7 @@ Command: ls < list.txt　//"<"以前のlsのコマンドのみ実行される
 Makefile        README.md       README.pdf      abc.txt         list.txt        myshell         myshell.c
 Command: rm abc.txt //abc.txtを消す
 Command: cat < list.txt > abc.txt //入力と、出力のリダイレクトを同時にする
+                                  //cat < list.txtが実行されず、list.txt > abc.txtが実行される
 Command: cmp list.txt abc.txt　//list.txt と　abc.txtの中身は同じである
 Command: ^C
 */
