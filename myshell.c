@@ -147,7 +147,8 @@ int main() {
 % make
 cc -D_GNU_SOURCE -Wall -std=c99 -o myshell myshell.c　//コンパイル
 % ./myshell
-Command: ls > list.txt　// ls の結果をlist.txtに格納
+Command: rm list.txt //list.txtが存在しないようにする
+Command: ls > list.txt　// ls の結果をlist.txtに格納　list.txtは存在しないため、作成される
 Command: cat list.txt  // 確認
 Makefile
 README.md
@@ -170,14 +171,11 @@ Command: grep .c < list.txt
 -rw-r--r--  1 azumamanaki  staff    6938  7 25 10:04 myshell.c
 Command: grep < list.txt .c  
 -rw-r--r--  1 azumamanaki  staff    6938  7 25 10:04 myshell.c
-Command: ls a b c > abc.txt　//存在しないファイルをlsし、その結果を存在しないabc.txtに保存しようとする
-ls: a: No such file or directory
-ls: b: No such file or directory
-ls: c: No such file or directory　//lsしようとしたファイルについてのエラーが出る。また、abc.txtが作成される。
+Command: rm abc.txt //abc.txtを消す
+Command: grep < abc.txt .c   //存在しないファイルからのリダイレクト  
+something is wrong　//エラー
 Command: ls < list.txt　//"<"以前のlsのコマンドのみ実行される
 Makefile        README.md       README.pdf      abc.txt         list.txt        myshell         myshell.c
-listcopy.txt < list.txt
-listcopy.txt: No such file or directory
 Command: ^C
 */
 
