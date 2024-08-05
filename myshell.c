@@ -173,13 +173,16 @@ Command: grep < list.txt .c
 -rw-r--r--  1 azumamanaki  staff    6938  7 25 10:04 myshell.c
 Command: rm abc.txt //abc.txtを消す
 Command: grep < abc.txt .c   //存在しないファイルからのリダイレクト  
-something is wrong　//エラー
+something is wrong　//入力リダイレクトエラー
 Command: ls < list.txt　//"<"以前のlsのコマンドのみ実行される
 Makefile        README.md       README.pdf      abc.txt         list.txt        myshell         myshell.c
 Command: rm abc.txt //abc.txtを消す
 Command: cat < list.txt > abc.txt //入力と、出力のリダイレクトを同時にする
-                                  //cat < list.txtが実行されず、list.txt > abc.txtが実行される
+                                  //cat < list.txtの実行結果が、abc.txtに出力される
 Command: cmp list.txt abc.txt　//list.txt と　abc.txtの中身は同じである
+Command: chmod u-w list.txt　//list.txtの書き込み権限を除去
+Command: ls > list.txt  //list.txtに結果を出力
+something is wrong //出力リダイレクトエラー
 Command: ^C
 */
 
