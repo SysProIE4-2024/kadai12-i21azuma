@@ -77,6 +77,13 @@ void redirect(int fd, char *path, int flag) {   // リダイレクト処理を�
   //        入力の場合 O_RDONLY
   //        出力の場合 O_WRONLY|O_TRUNC|O_CREAT
   //
+  close(fd);
+  int ffd = open(path, flag, 0644);
+  if (ffd != fd) {
+    fprintf(stderr,"something is wrong\n");
+    exit(1);
+  }
+
 }
 
 void externalCom(char *args[]) {                // 外部コマンドを実行する
@@ -86,6 +93,12 @@ void externalCom(char *args[]) {                // 外部コマンドを実行�
     exit(1);                                    //     非常事態，親を終了
   }
   if (pid==0) {                                 //   子プロセスなら
+    if (ifile != NULL) {
+      redirect(0, ifile, O_RDONLY);
+    }
+    if (ofile != NULL) {
+      redirect(1, ofile, O_WRONLY|O_CREAT|O_TRUNC);
+    }
     execvp(args[0], args);                      //     コマンドを実行
     perror(args[0]);
     exit(1);
@@ -129,4 +142,47 @@ int main() {
   }
   return 0;
 }
+
+/* 実行結果
+% make
+cc -D_GNU_SOURCE -Wall -std=c99 -o myshell myshell.c　//コンパイル
+% ./myshell
+Command: rm list.txt //list.txtが存在しないようにする
+Command: ls > list.txt　// ls の結果をlist.txtに格納　list.txtは存在しないため、作成される
+Command: cat list.txt  // 確認
+Makefile
+README.md
+README.pdf
+a.txt
+list.txt
+myshell
+myshell.c
+Command: ls -l > list.txt //listに上書き保存ができるか
+Command: cat list.txt //出来ている
+total 488
+-rw-r--r--  1 azumamanaki  staff      88  7 25 09:30 Makefile
+-rw-r--r--  1 azumamanaki  staff    1594  7 25 09:30 README.md
+-rw-r--r--  1 azumamanaki  staff  172057  7 25 09:30 README.pdf
+-rw-r--r--  1 azumamanaki  staff       5  7 25 10:04 a.txt
+-rw-r--r--  1 azumamanaki  staff       0  7 25 10:05 list.txt
+-rwxr-xr-x  1 azumamanaki  staff   51284  7 25 10:04 myshell
+-rw-r--r--  1 azumamanaki  staff    6938  7 25 10:04 myshell.c
+Command: grep .c < list.txt
+-rw-r--r--  1 azumamanaki  staff    6938  7 25 10:04 myshell.c
+Command: grep < list.txt .c  
+-rw-r--r--  1 azumamanaki  staff    6938  7 25 10:04 myshell.c
+Command: rm abc.txt //abc.txtを消す
+Command: grep < abc.txt .c   //存在しないファイルからのリダイレクト  
+something is wrong　//入力リダイレクトエラー
+Command: ls < list.txt　//"<"以前のlsのコマンドのみ実行される
+Makefile        README.md       README.pdf      abc.txt         list.txt        myshell         myshell.c
+Command: rm abc.txt //abc.txtを消す
+Command: cat < list.txt > abc.txt //入力と、出力のリダイレクトを同時にする
+                                  //cat < list.txtの実行結果が、abc.txtに出力される
+Command: cmp list.txt abc.txt　//list.txt と　abc.txtの中身は同じである
+Command: chmod u-w list.txt　//list.txtの書き込み権限を除去
+Command: ls > list.txt  //list.txtに結果を出力
+something is wrong //出力リダイレクトエラー
+Command: ^C
+*/
 
